@@ -9,23 +9,55 @@ import UIKit
 
 class ViewController: UIViewController {
     let imageView = UIImageView(image: nil)
-
+    let button = UIButton(type: .custom)
+    let field = UITextField()
+    let textView = UITextView()
+    let textViewPlaceHolder = "메모를 입력해주세요."
+//    let textFieldPlaceHolder = "제목을 입력해주세요."
+    
+    
+    
+    
+    // 키보드 아무화면이나 누르면 내려가게
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
+        self.view.endEditing(true)
+    }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         
-        createButton()
     
-//        view.addSubview(imageView)
-//        // 오토레이아웃을 따르겠다
-//        imageView.translatesAutoresizingMaskIntoConstraints = false
-//        imageView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 400).isActive = true
-//        imageView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 100).isActive = true
-//        imageView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -80).isActive = true
-//        imageView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -100).isActive = true
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        
+        titleTextField()
+        createImageButton()
+        memoTextView()
+        
     }
-    func createButton() {
-        let button = UIButton(type: .custom)
+    
+    func titleTextField() {
+        
+        field.placeholder = "제목을 입력해주세요."
+        field.textAlignment = .center
+        field.font = UIFont.systemFont(ofSize: 30)
+        
+        
+        
+        
+        self.view.addSubview(field)
+        field.translatesAutoresizingMaskIntoConstraints = false
+        field.widthAnchor.constraint(equalToConstant: view.bounds.width - 20).isActive = true
+        field.heightAnchor.constraint(equalToConstant: view.bounds.height / 20).isActive = true
+        field.topAnchor.constraint(equalTo: view.topAnchor, constant: view.bounds.height / 8).isActive = true
+        field.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+    }
+    
+    func createImageButton() {
         let image = UIImage(systemName: "photo", withConfiguration: UIImage.SymbolConfiguration(pointSize: view.bounds.height / 10))
         
         // 이미지뷰가 비었을때 image 차있을 때 imageView
@@ -39,12 +71,31 @@ class ViewController: UIViewController {
         
         self.view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.widthAnchor.constraint(equalToConstant: view.bounds.width - 20).isActive = true
+        button.widthAnchor.constraint(equalToConstant: view.bounds.width / 1.3).isActive = true
         button.heightAnchor.constraint(equalToConstant: view.bounds.height / 3).isActive = true
         button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        button.topAnchor.constraint(equalTo: field.bottomAnchor, constant: 10).isActive = true
     }
-    func observeButton() {
+    
+    
+    func memoTextView() {
+
+        textView.text = textViewPlaceHolder
+        textView.textColor = .lightGray
+        textView.font = UIFont.systemFont(ofSize: 18)
+        textView.delegate = self
+        textView.backgroundColor = .clear
+        
+        self.view.addSubview(textView)
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.widthAnchor.constraint(equalToConstant: view.bounds.width - 20).isActive = true
+        textView.heightAnchor.constraint(equalToConstant: view.bounds.height / 4.5).isActive = true
+        textView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        textView.topAnchor.constraint(equalTo: button.bottomAnchor, constant: 10).isActive = true
+    }
+    
+    
+    func createFinishButton() {
         
     }
     
@@ -55,7 +106,14 @@ class ViewController: UIViewController {
         vc.delegate = self
         vc.allowsEditing = true
         present(vc, animated: true)
-    }   
+    }
+    
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
+    }
 }
 
 
@@ -65,10 +123,8 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         
         if let image = info[UIImagePickerController.InfoKey(rawValue: "UIImagePickerControllerEditedImage")] as? UIImage {
             imageView.image = image
-
         }
-
-        createButton()
+        createImageButton()
         picker.dismiss(animated: true, completion: nil)
     }
     
@@ -77,4 +133,26 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     }
     
 }
+
+extension ViewController: UITextViewDelegate {
+    // 클릭 되있을때
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == textViewPlaceHolder {
+            textView.text = nil
+            textView.textColor = .black
+        }
+        if self.view.frame.origin.y == 0 {
+                        self.view.frame.origin.y -= view.bounds.height / 4.5
+                }
+    }
+    
+    // 입력이 끝났을때
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = textViewPlaceHolder
+            textView.textColor = .lightGray
+        }
+    }
+}
+
 
