@@ -90,7 +90,7 @@ class MemoViewController: UIViewController {
 //        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss EEEE"
 //        print("현재시간: " + formatter.string(from: date as Date))
         
-        CoreDataManager.shared.saveCoreData(title: field.text ?? "제목이 없어요", memo: field.text ?? "메모가 없어요")
+        CoreDataManager.shared.saveCoreData(title: field.text ?? "제목이 없어요", memo: textView.text ?? "메모가 없어요")
         
         self.dismiss(animated: true)
     }

@@ -17,6 +17,7 @@ class MainViewController: UIViewController {
         return tableView
     }()
     
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         CoreDataManager.shared.readCoreData()
@@ -27,7 +28,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         
         CoreDataManager.shared.readCoreData()
-
+        
         navigationItem.title = "나만의 수첩"
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(goToMemoVC))
         
@@ -68,7 +69,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: MainTableViewCell.reuseIdentifier, for: indexPath) as? MainTableViewCell else {
             return UITableViewCell()
         }
-        guard let result = CoreDataManager.shared.resultArray?[indexPath.item] else { return UITableViewCell() }
+        guard let result = CoreDataManager.shared.resultArray?.reversed()[indexPath.item] else { return UITableViewCell() }
         cell.setUI(result: result)
         
         return cell
@@ -76,6 +77,10 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 class MainTableViewCell: UITableViewCell {
+    var title = UILabel()
+    var memo = UILabel()
+    var date = UILabel()
+    
     static let reuseIdentifier: String = "MainTableViewCell"
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -86,8 +91,43 @@ class MainTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func getStringFromDate(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .long
+        dateFormatter.timeStyle = .long
+
+        return dateFormatter.string(from: date) // "January 14, 2021"
+    }
+    
     func setUI(result: NSManagedObject) {
-        self.textLabel?.text = result.value(forKey: "title") as! String
+        //        self.textLabel?.text = result.value(forKey: "title") as? String
         // 이곳에서 테이블 뷰 세팅
+        
+        
+        self.title.text = result.value(forKey: "title") as? String
+        self.memo.text = result.value(forKey: "memo") as? String
+        if let date = result.value(forKey: "date") as? Date {
+            self.date.text = getStringFromDate(date: date)
+        }
+        
+        self.addSubview(title)
+        self.addSubview(memo)
+        self.addSubview(date)
+        
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10).isActive = true
+        title.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        title.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        title.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        // 3
+        memo.translatesAutoresizingMaskIntoConstraints = false
+        memo.leadingAnchor.constraint(equalTo: title.trailingAnchor, constant: 10).isActive = true
+        memo.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        //
+        date.translatesAutoresizingMaskIntoConstraints = false
+        date.leadingAnchor.constraint(equalTo: memo.trailingAnchor, constant: 10).isActive = true
+        date.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        
     }
 }
