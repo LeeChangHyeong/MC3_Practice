@@ -16,9 +16,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
+        let navVC = UINavigationController(rootViewController: CollectionViewController())
+        
         // 제일 처음 시작하는 화면
-        window?.rootViewController = ViewController()
+        window?.rootViewController = navVC
         window?.makeKeyAndVisible()
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
