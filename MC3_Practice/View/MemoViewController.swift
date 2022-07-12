@@ -6,11 +6,8 @@
 //
 
 import UIKit
-import CoreData
 
 class MemoViewController: UIViewController {
-    static let shared = MemoViewController()
-    
     let imageView = UIImageView(image: nil)
     let button = UIButton(type: .custom)
     let field = UITextField()
@@ -19,9 +16,6 @@ class MemoViewController: UIViewController {
     let date = NSDate() // 현재 시간 가져오기
     let formatter = DateFormatter()
     
-    var resultArray: [NSManagedObject]?
-    
-    
     // 키보드 아무화면이나 누르면 내려가게
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
         self.view.endEditing(true)
@@ -29,120 +23,15 @@ class MemoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
 
         view.backgroundColor = .systemBackground
-        
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "완료", style: .plain, target: self, action: #selector(finishMemo(_:)))
-        
-    
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        
         
         titleTextField()
         createImageButton()
         memoTextView()
-
-        
-        
     }
-    
-    
-    func saveCoreData(title: String, memo: String) -> Bool {
-        // App Delegate 호출
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
-        
-        // App Delegate 내부에 있는 viewContext 호출
-        let managedContext = appDelegate.persistentContainer.viewContext
-        
-        // managedContext 내부에 있는 entity 호출
-        let entity = NSEntityDescription.entity(forEntityName: "Entity", in: managedContext)!
-        
-        // entity 객체 생성
-        let object = NSManagedObject(entity: entity, insertInto: managedContext)
-        
-        // 값 설정
-        object.setValue(title, forKey: "title")
-        object.setValue(memo, forKey: "memo")
-        object.setValue(Date(), forKey: "date")
-        object.setValue(UUID(), forKey: "id")
-        
-        do {
-            // managedContext 내부의 변경사항 저장
-            try managedContext.save()
-            return true
-        } catch let error as NSError {
-            // 에러 발생시
-            print("Could not save. \(error), \(error.userInfo)")
-            return false
-        }
-        
-    }
-    
-    func readCoreData() throws -> [NSManagedObject]? {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return nil }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        
-        // Entity의 fetchRequest 생성
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Entity")
-        
-        // 정렬 또는 조건 설정
-        //    let sort = NSSortDescriptor(key: "createDate", ascending: false)
-        //    fetchRequest.sortDescriptors = [sort]
-        //    fetchRequest.predicate = NSPredicate(format: "isFinished = %@", NSNumber(value: isFinished))
-        
-        do {
-            // fetchRequest를 통해 managedContext로부터 결과 배열을 가져오기
-            let resultCDArray = try managedContext.fetch(fetchRequest)
-            return resultCDArray
-        } catch let error as NSError {
-            print("Could not save. \(error), \(error.userInfo)")
-            throw error
-        }
-    }
-    
-    func deleteCoreData(id: UUID) -> Bool {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: "entity")
-        
-        // 아이디를 삭제 기준으로 설정
-        fetchRequest.predicate = NSPredicate(format: "id = %@", id.uuidString)
-        
-        do {
-            let result = try managedContext.fetch(fetchRequest)
-            let objectToDelete = result[0] as! NSManagedObject
-            managedContext.delete(objectToDelete)
-            try managedContext.save()
-            return true
-        } catch let error as NSError {
-            print("Could not update. \(error), \(error.userInfo)")
-            return false
-        }
-    }
-    
-    func updateCoreData(id: UUID, title: String, memo: String) -> Bool {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>.init(entityName: "Diffuser")
-        fetchRequest.predicate = NSPredicate(format: "id = %@", id.uuidString)
-        
-        do {
-            let result = try managedContext.fetch(fetchRequest)
-            let object = result[0] as! NSManagedObject
-            
-            object.setValue(title, forKey: "title")
-            object.setValue(memo, forKey: "memo")
-            
-            try managedContext.save()
-            return true
-        } catch let error as NSError {
-            print("Could not update. \(error), \(error.userInfo)")
-            return false
-        }
-    }
-
-    
     
     func titleTextField() {
         
@@ -200,12 +89,9 @@ class MemoViewController: UIViewController {
 //        formatter.locale = Locale(identifier: "ko") // 로케일 변경
 //        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss EEEE"
 //        print("현재시간: " + formatter.string(from: date as Date))
-        _ = saveCoreData(title: field.text ?? "제목이 없어요", memo: field.text ?? "메모가 없어요")
-        do {
-            self.resultArray = try readCoreData()
-        } catch {
-            print(error)
-        }
+        
+        CoreDataManager.shared.saveCoreData(title: field.text ?? "제목이 없어요", memo: field.text ?? "메모가 없어요")
+        
         self.dismiss(animated: true)
     }
     

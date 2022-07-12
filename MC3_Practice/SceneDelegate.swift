@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        let navVC = UINavigationController(rootViewController: CollectionViewController())
+        let navVC = UINavigationController(rootViewController: MainViewController())
         
         // 제일 처음 시작하는 화면
         window?.rootViewController = navVC
