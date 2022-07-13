@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MemoViewController: UIViewController {
+class MemoDetailViewController: UIViewController {
     let imageView = UIImageView(image: nil)
     let button = UIButton(type: .custom)
     let field = UITextField()
@@ -126,7 +126,7 @@ class MemoViewController: UIViewController {
 }
 
 
-extension MemoViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension MemoDetailViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
@@ -143,7 +143,7 @@ extension MemoViewController: UIImagePickerControllerDelegate, UINavigationContr
     
 }
 
-extension MemoViewController: UITextViewDelegate {
+extension MemoDetailViewController: UITextViewDelegate {
     // 클릭 되있을때
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.text == textViewPlaceHolder {

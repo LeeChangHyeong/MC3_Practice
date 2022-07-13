@@ -57,7 +57,7 @@ class MainViewController: UIViewController {
     
     @objc fileprivate func goToMemoVC(){
         // 객체 인스턴스 생성
-        let memoVC = MemoViewController()
+        let memoVC = MemoDetailViewController()
         // 푸쉬한다
         self.navigationController?.pushViewController(memoVC, animated: true)
     }
@@ -152,6 +152,8 @@ class MainTableViewCell: UITableViewCell {
         self.addSubview(date)
         self.addSubview(memoImage)
         
+        if memoImage == UIImage(systemName: "photo"){
+        memoImage.backgroundColor = .white
         memoImage.translatesAutoresizingMaskIntoConstraints = false
         memoImage.widthAnchor.constraint(equalToConstant: 80).isActive = true
         memoImage.heightAnchor.constraint(equalToConstant: 80).isActive = true
@@ -159,6 +161,15 @@ class MainTableViewCell: UITableViewCell {
         memoImage.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant:  14).isActive = true
         memoImage.layer.masksToBounds = true
         memoImage.layer.cornerRadius = 10
+        } else {
+            memoImage.translatesAutoresizingMaskIntoConstraints = false
+            memoImage.widthAnchor.constraint(equalToConstant: 80).isActive = true
+            memoImage.heightAnchor.constraint(equalToConstant: 80).isActive = true
+            memoImage.topAnchor.constraint(equalTo: self.topAnchor, constant:  14).isActive = true
+            memoImage.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant:  14).isActive = true
+            memoImage.layer.masksToBounds = true
+            memoImage.layer.cornerRadius = 10
+        }
         
         
         title.font = UIFont.systemFont(ofSize: 19)
