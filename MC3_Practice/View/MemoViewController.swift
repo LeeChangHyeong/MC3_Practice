@@ -90,10 +90,21 @@ class MemoViewController: UIViewController {
 //        formatter.locale = Locale(identifier: "ko") // 로케일 변경
 //        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss EEEE"
 //        print("현재시간: " + formatter.string(from: date as Date))
-        
-        CoreDataManager.shared.saveCoreData(title: field.text ?? "제목이 없어요", memo: textView.text ?? "메모가 없어요", image: imageView.image?.pngData() ?? UIImage(systemName: "photo")?.pngData() as! Data)
-        
-        self.dismiss(animated: true)
+        if field.text == "" {
+            
+            let alert = UIAlertController(title: "제목을 꼭 적어주세요!", message: "", preferredStyle: UIAlertController.Style.alert)
+            let okAction = UIAlertAction(title: "OK", style: .default) { (action) in
+                    }
+            alert.addAction(okAction)
+            present(alert, animated: false, completion: nil)
+            
+        } else {
+            CoreDataManager.shared.saveCoreData(title: field.text ?? "제목이 없어요", memo: textView.text ?? "메모가 없어요", image: imageView.image?.pngData() ?? UIImage(systemName: "photo")?.pngData() as! Data)
+            
+            navigationController?.popViewController(animated: true)
+            
+            
+        }
     }
     
     

@@ -43,8 +43,8 @@ class MainViewController: UIViewController {
         tableView.layer.cornerRadius = 20
         
         
-//        self.tableView.clipsToBounds = true
-//        self.tableView.layer.cornerRadius = 140
+        //        self.tableView.clipsToBounds = true
+        //        self.tableView.layer.cornerRadius = 140
         
     }
     
@@ -78,7 +78,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 106
     }
-
+    
     
     
     
@@ -89,13 +89,13 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         guard let result = CoreDataManager.shared.resultArray?.reversed()[indexPath.item] else { return UITableViewCell() }
         cell.setUI(result: result)
         
-//        cell.backgroundColor = UIColor.systemGreen
-//        cell.layer.borderColor = UIColor.black.cgColor
-//        cell.layer.borderWidth = 1
-//        cell.layer.cornerRadius = 8
-//        cell.clipsToBounds = true
-
-       
+        //        cell.backgroundColor = UIColor.systemGreen
+        //        cell.layer.borderColor = UIColor.black.cgColor
+        //        cell.layer.borderWidth = 1
+        //        cell.layer.cornerRadius = 8
+        //        cell.clipsToBounds = true
+        
+        
         
         
         return cell
@@ -130,7 +130,7 @@ class MainTableViewCell: UITableViewCell {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .long
         dateFormatter.timeStyle = .short
-
+        
         return dateFormatter.string(from: date) // "January 14, 2021"
     }
     
@@ -138,11 +138,11 @@ class MainTableViewCell: UITableViewCell {
         //        self.textLabel?.text = result.value(forKey: "title") as? String
         // 이곳에서 테이블 뷰 세팅
         
-        
         self.title.text = result.value(forKey: "title") as? String
         self.memo.text = result.value(forKey: "memo") as? String
         if let date = result.value(forKey: "date") as? Date {
             self.date.text = getStringFromDate(date: date)
+            
         }
         self.memoImage.image = UIImage(data: result.value(forKey: "image") as! Data)
         
@@ -157,21 +157,37 @@ class MainTableViewCell: UITableViewCell {
         memoImage.heightAnchor.constraint(equalToConstant: 80).isActive = true
         memoImage.topAnchor.constraint(equalTo: self.topAnchor, constant:  14).isActive = true
         memoImage.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant:  14).isActive = true
+        memoImage.layer.masksToBounds = true
+        memoImage.layer.cornerRadius = 10
         
-    
         
+        title.font = UIFont.systemFont(ofSize: 19)
         title.translatesAutoresizingMaskIntoConstraints = false
-        title.topAnchor.constraint(equalTo: self.topAnchor, constant: 24).isActive = true
+        title.topAnchor.constraint(equalTo: self.topAnchor, constant: 21).isActive = true
         title.leadingAnchor.constraint(equalTo: memoImage.trailingAnchor, constant: 14).isActive = true
         
-        memo.translatesAutoresizingMaskIntoConstraints = false
-        memo.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 8).isActive = true
-        memo.leadingAnchor.constraint(equalTo: memoImage.trailingAnchor, constant: 14).isActive = true
         
+        if memo.text == "메모를 입력해주세요."{
+            memo.textColor = UIColor(named: "memoColor")
+            memo.font = UIFont.systemFont(ofSize: 16)
+            memo.text = " "
+            memo.translatesAutoresizingMaskIntoConstraints = false
+            memo.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 7).isActive = true
+            memo.leadingAnchor.constraint(equalTo: memoImage.trailingAnchor, constant: 14).isActive = true
+        } else {
+            memo.textColor = UIColor(named: "memoColor")
+            memo.font = UIFont.systemFont(ofSize: 16)
+            memo.translatesAutoresizingMaskIntoConstraints = false
+            memo.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 7).isActive = true
+            memo.leadingAnchor.constraint(equalTo: memoImage.trailingAnchor, constant: 14).isActive = true
+        }
+        
+        date.textColor = UIColor(named: "dateColor")
+        date.font = UIFont.systemFont(ofSize: 14)
+    
         date.translatesAutoresizingMaskIntoConstraints = false
-//        date.topAnchor.constraint(equalTo: memo.bottomAnchor, constant: 8).isActive = true
+        //        date.topAnchor.constraint(equalTo: memo.bottomAnchor, constant: 8).isActive = true
         date.leadingAnchor.constraint(equalTo: memoImage.trailingAnchor, constant: 14).isActive = true
-        
-        date.topAnchor.constraint(equalTo: memo.bottomAnchor, constant: 8).isActive = true
+        date.topAnchor.constraint(equalTo: memo.bottomAnchor, constant: 6).isActive = true
     }
 }
