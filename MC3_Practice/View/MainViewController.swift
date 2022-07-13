@@ -106,26 +106,15 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
 
 class MainTableViewCell: UITableViewCell {
     
-//    override var frame: CGRect {
-//        get {
-//            return super.frame
-//        }
-//        set (newFrame) {
-//            var frame = newFrame
-//            let newWidth = frame.width * 0.90 // get 80% width here
-//            let space = (frame.width - newWidth) / 2
-//
-//            frame.size.width = newWidth
-//            frame.origin.x += space
-//
-//            super.frame = frame
-//
-//        }
-//    }
-    
     var title = UILabel()
     var memo = UILabel()
     var date = UILabel()
+    private let memoImage: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleToFill
+        
+        return iv
+    }()
     
     static let reuseIdentifier: String = "MainTableViewCell"
     
@@ -155,28 +144,34 @@ class MainTableViewCell: UITableViewCell {
         if let date = result.value(forKey: "date") as? Date {
             self.date.text = getStringFromDate(date: date)
         }
-              
+        self.memoImage.image = UIImage(data: result.value(forKey: "image") as! Data)
+        
         
         self.addSubview(title)
         self.addSubview(memo)
         self.addSubview(date)
+        self.addSubview(memoImage)
+        
+        memoImage.translatesAutoresizingMaskIntoConstraints = false
+        memoImage.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        memoImage.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        memoImage.topAnchor.constraint(equalTo: self.topAnchor, constant:  14).isActive = true
+        memoImage.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant:  14).isActive = true
+        
+    
         
         title.translatesAutoresizingMaskIntoConstraints = false
-        title.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10).isActive = true
-        title.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        title.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        title.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        title.topAnchor.constraint(equalTo: self.topAnchor, constant: 24).isActive = true
+        title.leadingAnchor.constraint(equalTo: memoImage.trailingAnchor, constant: 14).isActive = true
         
-        // 3
         memo.translatesAutoresizingMaskIntoConstraints = false
-        memo.leadingAnchor.constraint(equalTo: title.trailingAnchor, constant: 10).isActive = true
-        memo.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        //
-        date.translatesAutoresizingMaskIntoConstraints = false
-//        date.leadingAnchor.constraint(equalTo: memo.trailingAnchor, constant: 10).isActive = true
-//        date.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        date.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        date.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10).isActive = true
+        memo.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 8).isActive = true
+        memo.leadingAnchor.constraint(equalTo: memoImage.trailingAnchor, constant: 14).isActive = true
         
+        date.translatesAutoresizingMaskIntoConstraints = false
+//        date.topAnchor.constraint(equalTo: memo.bottomAnchor, constant: 8).isActive = true
+        date.leadingAnchor.constraint(equalTo: memoImage.trailingAnchor, constant: 14).isActive = true
+        
+        date.topAnchor.constraint(equalTo: memo.bottomAnchor, constant: 8).isActive = true
     }
 }

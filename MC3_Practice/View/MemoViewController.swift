@@ -12,6 +12,7 @@ class MemoViewController: UIViewController {
     let button = UIButton(type: .custom)
     let field = UITextField()
     let textView = UITextView()
+    let titleFieldPlaceHolder = "제목을 입력해주세요."
     let textViewPlaceHolder = "메모를 입력해주세요."
     let date = NSDate() // 현재 시간 가져오기
     let formatter = DateFormatter()
@@ -35,7 +36,7 @@ class MemoViewController: UIViewController {
     
     func titleTextField() {
         
-        field.placeholder = "제목을 입력해주세요."
+        field.placeholder = titleFieldPlaceHolder
         field.textAlignment = .center
         field.font = UIFont.systemFont(ofSize: 30)
         
@@ -90,7 +91,7 @@ class MemoViewController: UIViewController {
 //        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss EEEE"
 //        print("현재시간: " + formatter.string(from: date as Date))
         
-        CoreDataManager.shared.saveCoreData(title: field.text ?? "제목이 없어요", memo: textView.text ?? "메모가 없어요")
+        CoreDataManager.shared.saveCoreData(title: field.text ?? "제목이 없어요", memo: textView.text ?? "메모가 없어요", image: imageView.image?.pngData() ?? UIImage(systemName: "photo")?.pngData() as! Data)
         
         self.dismiss(animated: true)
     }

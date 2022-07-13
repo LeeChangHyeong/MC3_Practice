@@ -12,7 +12,7 @@ class CoreDataManager {
     static let shared = CoreDataManager()
     var resultArray: [NSManagedObject]?
 
-    func saveCoreData(title: String, memo: String) {
+    func saveCoreData(title: String, memo: String, image: Data) {
         // App Delegate 호출
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         
@@ -30,6 +30,7 @@ class CoreDataManager {
         object.setValue(memo, forKey: "memo")
         object.setValue(Date(), forKey: "date")
         object.setValue(UUID(), forKey: "id")
+        object.setValue(image, forKey: "image")
 
         do {
             // managedContext 내부의 변경사항 저장
